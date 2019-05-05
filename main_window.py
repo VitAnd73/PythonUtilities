@@ -99,7 +99,7 @@ class QthreadApp(QtWidgets.QWidget):
         self.combHandlers.setCurrentIndex(self.currentHandlerIndex)
         self.combHandlers.activated.connect(self.onComboHandlersChange)
         #endregion
-        
+
         #region various ui elements
         self.commandInfo = QtWidgets.QTextEdit(self)
         self.commandInfo.setEnabled(False)
@@ -122,12 +122,12 @@ class QthreadApp(QtWidgets.QWidget):
                                  "border-style: solid; border-radius: 3px; border-width: 0.5px; border-color: rgba(0,140,255,255);")
 
         self.butStart = PushBut1(self)
-        self.butStart.setText("⯈")
+        self.butStart.setText(u"\u25B6")
         self.butStart.setFixedWidth(72)
         self.butStart.setFont(font_but)
 
         self.butStop = PushBut1(self)
-        self.butStop.setText("⯀")
+        self.butStop.setText(u"\u25A0")
         self.butStop.setFixedWidth(72)
         self.butStop.setFont(font_but)
         self.butStop.setEnabled(False)

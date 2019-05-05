@@ -1,9 +1,14 @@
+from Handlers.WebHtmlXPathsList.WebHtmlXpathsListHandler import WebHtmlXpathsListHandler
 from Handlers.WebHtmlXPaths.WebHtmlXpathsHandler import WebHtmlXpathsHandler
 from Handlers.DefaultHandler import DefaultHandler
+from Handlers.RosridParsing.RosridParsingHandler import RosridParsingHandler
 
 def try_code(args_input_str):
     if not args_input_str: return
-    wh = WebHtmlXpathsHandler()
+
+    wh = WebHtmlXpathsListHandler()
+    # wh = WebHtmlXpathsHandler()
+
     wh.start_handling(args_input_str)
 
 if __name__ == "__main__":

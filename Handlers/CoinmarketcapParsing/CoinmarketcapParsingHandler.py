@@ -27,7 +27,7 @@ class CoinmarketcapParsingHandler(AbsHandler):
         i = ""
         for i in driver.find_elements_by_xpath('//a[@class="currency-name-container link-secondary"]'):
             link.append(i.get_attribute('href'))
-        return "All href's in your pocket!"
+        self.publish_info("All href's in your pocket!")
 
         driver.get('https://coinmarketcap.com')
         i = 0
@@ -35,12 +35,12 @@ class CoinmarketcapParsingHandler(AbsHandler):
             Coin  = driver.find_elements_by_xpath('//a[@class="currency-name-container link-secondary"]')[i].text
             name.append(Coin)
             i = i + 1
-        return "Coin captured!"
+        self.publish_info("Coin captured!")
 
         GitHublink_get = ""
         i = 0
         nolink = "No link"
-        print("Starting getting GitHub links!")
+        self.publish_info("Starting getting GitHub links!")
         while i < Number_of_elements:
             GitHublink_get = ""
             driver.get(link[i])
@@ -71,10 +71,10 @@ class CoinmarketcapParsingHandler(AbsHandler):
                     pass
             return GitHub[i]
             i = i + 1
-        return "Github link getted!"
+        self.publish_info("Github link getted!")
         data = pd.DataFrame({'name': name ,'link': link, 'GitHub': GitHub})
         
-        return handling_params_string + data
+        return data
     
 if __name__ == "__main__":
     CoinmarketcapParsingHandler().handle_sysragv(sys.argv)

@@ -99,7 +99,7 @@ class QthreadApp(QtWidgets.QWidget):
         self.combHandlers.setCurrentIndex(self.currentHandlerIndex)
         self.combHandlers.activated.connect(self.onComboHandlersChange)
         #endregion
-        
+
         #region various ui elements
         self.commandInfo = QtWidgets.QTextEdit(self)
         self.commandInfo.setEnabled(False)

@@ -71,9 +71,9 @@ class QthreadApp(QtWidgets.QWidget):
         self.handlers_names = list(self.installed_handlers.keys())
         self.handlers_descriptions = [h.get_description() for h in list(self.installed_handlers.values()) ]
 
-        self.currentHandlerName = 'DefaultHandler'
-        self.currentHandler = self.installed_handlers[self.currentHandlerName]
-        self.currentHandlerIndex = self.handlers_names.index(self.currentHandlerName)
+        self.current_handler_name = 'DefaultHandler'
+        self.currentHandler = self.installed_handlers[self.current_handler_name]
+        self.currentHandlerIndex = self.handlers_names.index(self.current_handler_name)
 
         self.handler_thread = HandlerThread(self.installed_handlers)
         self.handler_thread.progress_signal.connect(self.on_progress_info)
@@ -121,13 +121,13 @@ class QthreadApp(QtWidgets.QWidget):
         self.command_handling_info.setStyleSheet("margin: 1px; padding: 7px; background-color: rgba(0,255,255,1); color: rgba(0, 0, 0, 1);"
                                  "border-style: solid; border-radius: 3px; border-width: 0.5px; border-color: rgba(0,140,255,255);")
 
-        self.butStart = PushBut1(self)
-        self.butStart.setText("⯈")
-        self.butStart.setFixedWidth(72)
-        self.butStart.setFont(font_but)
+        self.button_start = PushBut1(self)
+        self.button_start.setText(u"\u25B6")
+        self.button_start.setFixedWidth(72)
+        self.button_start.setFont(font_but)
 
         self.butStop = PushBut1(self)
-        self.butStop.setText("⯀")
+        self.butStop.setText(u"\u25A0")
         self.butStop.setFixedWidth(72)
         self.butStop.setFont(font_but)
         self.butStop.setEnabled(False)
@@ -137,24 +137,24 @@ class QthreadApp(QtWidgets.QWidget):
         self.grid1.addWidget(self.combHandlers, 0, 0, 1, 14)
         self.grid1.addWidget(self.commandInfo, 1, 0, 1, 14)
         self.grid1.addWidget(self.command_args_string, 2, 0, 1, 12)
-        self.grid1.addWidget(self.butStart, 2, 12, 1, 1)
+        self.grid1.addWidget(self.button_start, 2, 12, 1, 1)
         self.grid1.addWidget(self.butStop, 2, 13, 1, 1)
         self.grid1.addWidget(self.command_handling_info, 3, 0, 143, 14)
 
         self.grid1.setContentsMargins(7, 7, 7, 7)
         self.setLayout(self.grid1)
         #endregion
-        self.butStart.clicked.connect(self.on_butStart)
+        self.button_start.clicked.connect(self.on_butStart)
         self.butStop.clicked.connect(self.on_butStop)
 
     def onComboHandlersChange(self, selection_index):
-        self.currentHandlerName = self.handlers_names[selection_index]
-        self.currentHandler = self.installed_handlers[self.currentHandlerName]
+        self.current_handler_name = self.handlers_names[selection_index]
+        self.currentHandler = self.installed_handlers[self.current_handler_name]
         self.currentHandlerIndex = selection_index
         self.commandInfo.setPlainText(self.currentHandler.get_description())
 
     def switch_start_elements(self, state_enabled):
-        self.butStart.setEnabled(state_enabled)
+        self.button_start.setEnabled(state_enabled)
         self.combHandlers.setEnabled(state_enabled)
         self.command_args_string.setEnabled(state_enabled)
 
@@ -164,7 +164,7 @@ class QthreadApp(QtWidgets.QWidget):
         self.command_handling_info.append(f'{str(datetime.now())} - starting [{self.currentHandlerName}] for [{handler_input_string}]')
 
         self.handler_thread.set_handler_params_string(handler_input_string)
-        self.handler_thread.set_selected_handler(self.currentHandlerName)
+        self.handler_thread.set_selected_handler(self.current_handler_name)
         self.handler_thread.start()
         #disable all the controls except for the stop button
         self.switch_start_elements(False)

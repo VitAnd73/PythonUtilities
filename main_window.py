@@ -161,7 +161,7 @@ class QthreadApp(QtWidgets.QWidget):
     def on_butStart(self):
         handler_input_string = self.command_args_string.text()
         self.command_handling_info.clear()
-        self.command_handling_info.append(f'{str(datetime.now())} - starting [{self.currentHandlerName}] for [{handler_input_string}]')
+        self.command_handling_info.append(f'{str(datetime.now())} - starting [{self.current_handler_name}] for [{handler_input_string}]')
 
         self.handler_thread.set_handler_params_string(handler_input_string)
         self.handler_thread.set_selected_handler(self.current_handler_name)

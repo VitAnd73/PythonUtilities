@@ -1,7 +1,10 @@
 import os, sys
 from pkgutil import iter_modules, importlib
 from inspect import getmembers
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+import sys
+sys.path.append(".")
+
 from CoreLib.AbsHandler import AbsHandler
 from importlib.util  import spec_from_file_location, module_from_spec
 

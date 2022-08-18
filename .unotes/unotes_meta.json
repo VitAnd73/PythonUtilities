@@ -1,0 +1,74 @@
+{
+  "name": "",
+  "isOrdered": true,
+  "folders": {
+    "Assets": {
+      "name": "Assets",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "CoreLib": {
+      "name": "CoreLib",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "Handlers": {
+      "name": "Handlers",
+      "isOrdered": true,
+      "folders": {
+        "RosridParsing": {
+          "name": "RosridParsing",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "WebHtmlXPaths": {
+          "name": "WebHtmlXPaths",
+          "isOrdered": true,
+          "folders": {},
+          "files": {}
+        },
+        "WebHtmlXPathsList": {
+          "name": "WebHtmlXPathsList",
+          "isOrdered": true,
+          "folders": {
+            "__pycache__": {
+              "name": "__pycache__",
+              "isOrdered": true,
+              "folders": {},
+              "files": {}
+            }
+          },
+          "files": {
+            "wiki": 0
+          }
+        }
+      },
+      "files": {}
+    },
+    "Utils": {
+      "name": "Utils",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "venv": {
+      "name": "venv",
+      "isOrdered": true,
+      "folders": {},
+      "files": {}
+    },
+    "wiki": {
+      "name": "wiki",
+      "isOrdered": true,
+      "folders": {},
+      "files": {
+        "README": 0,
+        "coding_notes": 1
+      }
+    }
+  },
+  "files": {}
+}

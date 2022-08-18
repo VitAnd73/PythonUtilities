@@ -2,6 +2,9 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 from shlex import split
 import argparse
+
+sys.path.append(".")
+
 from CoreLib.AbsHandler import AbsHandler
 import pandas as pd
 from selenium import webdriver

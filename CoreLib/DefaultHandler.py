@@ -1,8 +1,8 @@
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from CoreLib.AbsHandler import AbsHandler
+import CoreLib.AbsHandler as cl
 
-class DefaultHandler(AbsHandler):
+class DefaultHandler(cl.AbsHandler):
     def get_name(self) -> str:
         return "DefaultHandler"
     def get_description(self) -> str:

@@ -32,10 +32,16 @@ class WebHtmlXpathsHandler(AbsHandler):
         tree = html.fromstring(page.content)
         data = {}
         for xps in args_input.xpathstrs:
-            itms = tree.xpath(xps)
-            temp_list = itms if args_input.keepwhitespace else [ itm.strip().lstrip() for itm in itms]
-            data[xps] = temp_list if args_input.keepempty else list(filter(None, temp_list))
-        df = pd.DataFrame(data)
+            try:
+                itms = tree.xpath(xps)
+                temp_list = str(itms) if args_input.keepwhitespace else [ str(itm).strip().lstrip() for itm in itms]
+                cur_value = temp_list if args_input.keepempty else list(filter(None, temp_list))
+            except Exception as e:
+                self.publish_info(f"Happened exception Exception {e}!")
+                cur_value = 'N/A'
+            data[xps] = cur_value
+        df = pd.DataFrame({ key:pd.Series(value) for key, value in data.items() })
+        df.fillna('', inplace=True)
         if args_input.outfilepath and self.is_running:
             self.publish_info(f"Writing results to file {args_input.outfilepath}!")
             df.to_csv(args_input.outfilepath, sep=',', index=False, encoding='utf-8')

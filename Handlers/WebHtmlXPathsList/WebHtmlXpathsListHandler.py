@@ -1,18 +1,28 @@
-import os, sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-from shlex import split
+import sys
 import argparse
+
 from CoreLib.AbsHandler import AbsHandler
 from time import sleep
-from datetime import datetime
 from time import sleep
 from random import randint
 import requests
 from lxml import html
 import pandas as pd
-import numpy as np
+from itertools import zip_longest
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+# splitter of the xpath and required command for getting the extracted stuff (text, attribute values, etc.)
+splitter = "&&"
+sleep_range_min = 1
+sleep_range_max = 3
+
+def deCFEmail(fp):
+    try:
+        r = int(fp[:2],16)
+        email = ''.join([chr(int(fp[i:i+2], 16) ^ r) for i in range(2, len(fp), 2)])
+        return email
+    except (ValueError):
+        pass
 
 class WebHtmlXpathsListHandler(AbsHandler):
     def __init__(self):
@@ -27,7 +37,7 @@ class WebHtmlXpathsListHandler(AbsHandler):
     def handle(self, handling_params_string):
         args_input = self.get_args_from_params_string(handling_params_string, self.arg_parser)
         #reading data from file
-        df = pd.read_csv(args_input.infilepath, index_col=0)
+        df = pd.read_csv(args_input.infilepath, index_col=0, header=None)
         self.publish_info(f"Read the data from file {args_input.infilepath}!")
 
         #helper function to map provided values
@@ -37,28 +47,50 @@ class WebHtmlXpathsListHandler(AbsHandler):
             page.raise_for_status()
             tree = html.fromstring(page.content)
 
-            def get_elem_at_xpath(elem_xpath):
-                res_elems = tree.xpath(elem_xpath)
-                res_elem = res_elems[0] if len(res_elems)>0 else None
-                return res_elem
+            def get_elem_at_xpath(xpath_str):
+                xpaths = xpath_str.split(splitter)
+                res_elems = tree.xpath(xpaths[0])
+                if len(xpaths)>1:
+                    # res = [eval("e." + xpaths[1]) for e in res_elems]
+                    res = [eval(xpaths[1]) for e in res_elems]
+                    return res
+                else:
+                    return res_elems
             return get_elem_at_xpath
 
         #creating final result
         res_df = pd.DataFrame(columns=df.columns)
+        errs = ['Err']*(res_df.shape[1]-1)
+
+        # pylint: disable=no-member
+        df.fillna('', inplace=True)
+        # pylint: disable=no-member
         for row in df.iterrows():
             index, data = row
             if self.is_running:
                 try:
-                    cur_mapper = get_elem_from_web_at_xpath(index)
-                    cur_data = data.map(cur_mapper, na_action='ignore')
-                    self.publish_info(f"Parsed @{index}: {', '.join(str(v) for v in list(cur_data))}")
-                    res_df = res_df.append(cur_data)
-                    sleep(randint(5, 15))
-
+                    cur_mapper = get_elem_from_web_at_xpath(data.iloc[0])
+                    xpath_list = data.tolist()[1:]
+                    # cur_data = map(cur_mapper, xpath_list)
+                    cur_data = [cur_mapper(xp) for xp in xpath_list]
+                    # cur_data = list(map(list, zip(*cur_data)))
+                    if len(cur_data)>0:
+                        cur_data = list(map(list, zip_longest(*cur_data, fillvalue=None)))
+                        for r in cur_data:
+                            res_df.loc[len(res_df)] = [data.iloc[0], *r]
+                        self.publish_info(f"Parsed @{index} for : {data.iloc[0]}, gotten {len(cur_data)} rows!")
+                    else:
+                        self.publish_info(f"Error while handling address {data.iloc[0]}  - empty data")
+                        res_df.loc[len(res_df)] = [data.iloc[0], *errs]
+                    sleep(randint(sleep_range_min, sleep_range_max))
                 except:
                     e = sys.exc_info()[0]
-                    self.publish_info(f"Error while handling address {index}  - {e}")
+                    self.publish_info(f"Error while handling address {data.iloc[0]}  - {e}")
+                    res_df.loc[len(res_df)] = [data.iloc[0], *errs]
+                    
             else:
+                if args_input.outfilepath and res_df.shape[0]>0:
+                    res_df.to_csv(args_input.outfilepath, sep=',', index=True, encoding='utf-8')
                 return "Stopped!"
 
         if args_input.outfilepath and self.is_running and res_df.shape[0]>0:
